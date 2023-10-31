@@ -1,5 +1,6 @@
 const log=require("../logger")
 const Chat=require("../Schemas/chat")
+const User=require("../Schemas/user")
 const { createMsg } = require("./message")
 const mongoose=require("../mongooseConnect")
 
@@ -17,11 +18,14 @@ async function findchatByID(chat_id) {
 async function findchat(user_id,friend_id) {
     const ids=[friend_id,user_id]
     try {
-        const chat=await Chat.findOne({people:{$all: ids}}).populate("people").populate("conversation")
-        // log("chat",chat)
+        const chat=await Chat.findOne({people:{$all: ids}}).populate({
+            path: 'people',
+            model: User,
+            select: {'name':1,"email":1} 
+        }).populate("conversation")
         return chat
     } catch (e) {
-        // log("error",e)
+        log("error",e)
     }
     
 }

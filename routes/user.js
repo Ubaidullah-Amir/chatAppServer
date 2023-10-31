@@ -69,16 +69,25 @@ router.post("/signup",(req,res)=>{
 // to modifiy user name,password,image
 router.post("/modify", upload.single('image'),(req,res)=>{
     try{
+        // either get image from req.body(no change) or req.file(modifed image)
         const newValues ={
             id:req.body.id,
             name:req.body.name,
             password:req.body.password,
-            image:`${domainName}/${req.file.filename}`
+            image:req.file?`${domainName}/${req.file.filename}`:req.body.image
         }
         modifyUser(newValues)   // id,name,image,password
         .then(upadatedUser=>{
             if(upadatedUser){
-                res.json({upadatedUser:upadatedUser,Success:true,Msg:"User Modified"})
+                const user={
+                    _id:upadatedUser._id,
+                    name:upadatedUser.name,
+                    email:upadatedUser.email,
+                    friend:upadatedUser.friend,
+                    image:upadatedUser.image
+                    
+                }
+                res.json({upadatedUser:user,Success:true,Msg:"User Modified"})
                 return 
             }
             res.status(400).json({Success:false,Msg:"User Not found"})

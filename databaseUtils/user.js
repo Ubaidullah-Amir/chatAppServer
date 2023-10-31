@@ -26,7 +26,11 @@ async function finduserById(currentUser_id) {
 }
 async function findUserByEmailNPass(email,password) {
     try {
-        const user =await User.findOne({email:email,password:password}).populate("friend")
+        const user =await User.findOne({email:email,password:password}).populate({
+            path: "friend",
+            model: User,
+            select: { "friend": 0 ,"password":0}
+        }).select({password: 0})
         // log("user",user)
         return user
     } catch (e) {
@@ -42,7 +46,6 @@ async function findFriendById(user_id) {
             model: User,
             select: { "friend": 0 ,"password":0}
         }).select({"friend":1})
-        log("friends",friends)
         return friends
     } catch (e) {
         // log("database error",e)
@@ -111,7 +114,11 @@ async function createUser(user_obj) {
         const person = await findUserByEmail(user_obj.email)
         if(!person){
             // if person is empty
-            const user = await User.create(user_obj)
+            const user = await User.create(user_obj).populate({
+                path: "friend",
+                model: User,
+                select: { "friend": 0 ,"password":0}
+            }).select({password: 0})
             
             return user
         }
@@ -133,7 +140,7 @@ async function modifyUser(user_obj) {
         user.name = name
         user.password = password
         user.image = image
-        upadatedUser = await user.save()
+        const upadatedUser = await user.save()
         return upadatedUser
         
     } catch (e) {
