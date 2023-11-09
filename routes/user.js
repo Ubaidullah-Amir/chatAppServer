@@ -3,8 +3,8 @@ const log=require("../logger")
 const router = express.Router()
 const {findUserByEmailNPass,createUser,deleteUserById,finduserById, getAllUser,modifyUser}=require("../databaseUtils/user")
 const upload = require("../multerConfig")
-const { port,hostname } =require("../config")
-const domainName = `${hostname}:${port}`
+require('dotenv').config();
+const domainName = `${process.env.BASE_URL}:${process.env.PORT}`
 // get a user
 router.post("/",(req,res)=>{
     try{

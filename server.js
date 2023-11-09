@@ -4,6 +4,8 @@ const friendRouter=require("./routes/friends")
 const chatRouter=require("./routes/chat")
 const msgRouter=require("./routes/message")
 const reqRouter=require("./routes/request")
+require('dotenv').config();
+
 const cors = require('cors')
 
 const express=require("express")
@@ -11,7 +13,6 @@ const app =express()
 
 const http = require('http');
 const { createMsg } = require("./databaseUtils/message")
-const { port } = require("./config")
 const server = http.createServer(app);
 
 // Create a online Map
@@ -81,6 +82,6 @@ app.get("/",(req,res)=>{
     res.send("Hello World")
 })
 
-server.listen(port, function() {
-    console.log('listening on *:3030');
+server.listen(process.env.PORT, function() {
+    console.log('listening on *:',process.env.PORT);
  });

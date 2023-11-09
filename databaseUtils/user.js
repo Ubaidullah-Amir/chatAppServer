@@ -114,13 +114,15 @@ async function createUser(user_obj) {
         const person = await findUserByEmail(user_obj.email)
         if(!person){
             // if person is empty
-            const user = await User.create(user_obj).populate({
-                path: "friend",
-                model: User,
-                select: { "friend": 0 ,"password":0}
-            }).select({password: 0})
-            
-            return user
+            const user = await User.create(user_obj)
+            console.log("user created",user)
+            const returnUser={
+                _id:user._id,
+                name:user.name,
+                email:user.email,
+                friend:user.friend
+            }
+            return returnUser
         }
         return null 
         

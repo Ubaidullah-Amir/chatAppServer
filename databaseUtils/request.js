@@ -10,7 +10,15 @@ async function getAllRequests(user_id) {
         const req =await Request.find({
             hasApproved:false,
             reciever:user_id
-        }).populate("reciever").populate("sender")
+        }).populate({
+            path: "reciever",
+            model: User,
+            select: { "friend": 0 ,"password":0}
+        }).populate({
+            path: "sender",
+            model: User,
+            select: { "friend": 0 ,"password":0}
+        })
 
         log("req",req)
         return req
@@ -61,7 +69,11 @@ async function requestAccepted(user_id,person_id) {
             conversation:[]
         }
         const chat= await createChat(chat_obj)
-        const user = await User.findOne({_id:user_id}).populate("friend")
+        const user = await User.findOne({_id:user_id}).populate({
+            path: "friend",
+            model: User,
+            select: { "friend": 0 ,"password":0}
+        }).select({password:0})
         return {user,person_id}
     } catch (e) {
         log("database error",e)
