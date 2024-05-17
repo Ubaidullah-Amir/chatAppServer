@@ -3,7 +3,16 @@ const mongoose=require("mongoose")
 
 const messageSchema = new mongoose.Schema({
 
-    text:{
+    type: {
+        type: String,
+        required: true,
+        enum: ["text","image","video","pdf"],
+      },
+    //   the data can be a string text or string url for the above types
+    data:{
+        type:String
+    },
+    description:{
         type:String
     },
     from:{

@@ -4,6 +4,9 @@ const friendRouter=require("./routes/friends")
 const chatRouter=require("./routes/chat")
 const msgRouter=require("./routes/message")
 const reqRouter=require("./routes/request")
+const {FireBaseUpload}  = require("./fireBaseMutlerConfig")
+const {FileUpload} = require("./databaseUtils/upload")
+
 require('dotenv').config();
 
 const cors = require('cors')
@@ -12,7 +15,8 @@ const express=require("express")
 const app =express()
 
 const http = require('http');
-const { createMsg } = require("./databaseUtils/message")
+const { addMsgToChat } = require("./databaseUtils/chat")
+
 const server = http.createServer(app);
 
 // Create a online Map
@@ -20,7 +24,7 @@ const onlineUser = new Map();
 
 const io = require("socket.io")(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.CLIENT_URL,
       methods: ["GET", "POST"]
     }
 });
@@ -31,7 +35,8 @@ io.on('connection', (socket) => {
     onlineUser.set(userId, socket.id)
   })
   socket.on("send-message",(data)=>{
-      createMsg(data.msg_obj)
+      // createMsg(data.msg_obj)
+      addMsgToChat(data.chat_id,data.msg_obj)
       .then((msg)=>{
         // to individual socketid (private message)
         const socketIdFriend = onlineUser.get(data.msg_obj.to)
@@ -66,8 +71,7 @@ app.use(express.urlencoded({extended:false}))
 
 
 
-
-
+app.route("/image").post(FireBaseUpload.single("file"), FileUpload);
 app.use("/user",userRouter)
 app.use("/friends",friendRouter)
 app.use("/chat",chatRouter)

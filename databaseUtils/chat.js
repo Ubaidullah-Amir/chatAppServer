@@ -36,6 +36,7 @@ async function addMsgToChat(chat_id,msg_obj) {
         const msg=await createMsg(msg_obj)
         // log("msg is :",msg)
         const chat = await Chat.updateOne({_id:chat_id},{$push:{conversation:msg.id}})
+        return msg
         // log("Message added",chat)
     } catch (e) {
         // log(e)

@@ -26,6 +26,7 @@ router.post("/",(req,res)=>{
 //post  for login
 router.post("/login",(req,res)=>{
     try{
+        
         findUserByEmailNPass(req.body.email,req.body.password)
         .then(user=>{
             if(user){
@@ -47,6 +48,7 @@ router.post("/login",(req,res)=>{
 //post for sign up
 router.post("/signup",(req,res)=>{
     try{
+        // firebaseSignup()
         createUser(req.body)
         .then(user=>{
             // log("user final",user)
