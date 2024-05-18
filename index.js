@@ -24,7 +24,8 @@ const onlineUser = new Map();
 
 const io = require("socket.io")(server, {
     cors: {
-      origin: process.env.CLIENT_URL,
+      // origin: process.env.CLIENT_URL,
+      origin:"*",
       methods: ["GET", "POST"]
     }
 });
