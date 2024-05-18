@@ -69,14 +69,14 @@ router.post("/signup",(req,res)=>{
 })
  
 // to modifiy user name,password,image
-router.post("/modify", upload.single('image'),(req,res)=>{
+router.post("/modify",(req,res)=>{
     try{
         // either get image from req.body(no change) or req.file(modifed image)
         const newValues ={
             id:req.body.id,
             name:req.body.name,
             password:req.body.password,
-            image:req.file?`${domainName}/${req.file.filename}`:req.body.image
+            image:req.body.image
         }
         modifyUser(newValues)   // id,name,image,password
         .then(upadatedUser=>{
@@ -106,7 +106,12 @@ router.post("/modify", upload.single('image'),(req,res)=>{
 //Get All Users
 router.get("/getusers",(req,res)=>{
     try{
-        getAllUser()
+        const {search } = req.query
+        const obj = {}
+        if(search){
+            obj.name = { $regex: search, $options: 'i' }
+        }
+        getAllUser(obj)
         .then(user=>{
             if(user){
                 res.json({Success:true,Msg:"User found",user:user})

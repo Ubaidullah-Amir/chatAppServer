@@ -5,9 +5,9 @@ const { createChat } = require("./chat")
 const { createRequest } = require("./request")
 const mongoose=require("../mongooseConnect")
 
-async function getAllUser() {
+async function getAllUser(obj) {
     try {
-        const user =await User.find()
+        const user =await User.find(obj).limit(20)
         return user
     } catch (e) {
         log("database error",e)
